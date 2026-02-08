@@ -1,0 +1,87 @@
+// Get elements
+const yesBtn = document.getElementById('yesBtn');
+const noBtn = document.getElementById('noBtn');
+const message = document.getElementById('message');
+const response = document.getElementById('response');
+
+// Track how many times "No" has been clicked
+let noClickCount = 0;
+
+// Messages that change when "No" is clicked
+const noMessages = [
+    "Are you sure? 🥺",
+    "Really? Give it another thought... 💭",
+    "Please? Just think about it! 🙏",
+    "You're breaking my heart... 💔",
+    "I'll take that as a maybe? 😊",
+    "The Yes button looks pretty good, doesn't it? 👀",
+    "Come on, you know you want to! 😄",
+    "I won't give up! ❤️"
+];
+
+// Yes button click handler
+yesBtn.addEventListener('click', function() {
+    response.textContent = "Yay! You made me the happiest! 💕✨";
+    response.classList.remove('hidden');
+    
+    // Hide buttons and change message
+    document.querySelector('.buttons').style.display = 'none';
+    message.textContent = "This is the best day ever! 🎉";
+    
+    // Add confetti effect (simple version)
+    createConfetti();
+});
+
+// No button click handler
+noBtn.addEventListener('click', function() {
+    if (noClickCount < noMessages.length) {
+        message.textContent = noMessages[noClickCount];
+        noClickCount++;
+        
+        // Make Yes button bigger each time
+        const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+        yesBtn.style.fontSize = (currentSize + 2) + 'px';
+        yesBtn.style.padding = '18px 45px';
+        
+        // Make No button smaller
+        const noCurrentSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
+        if (noCurrentSize > 12) {
+            noBtn.style.fontSize = (noCurrentSize - 1) + 'px';
+        }
+    }
+});
+
+// Simple confetti effect
+function createConfetti() {
+    const colors = ['#ff6b9d', '#f093fb', '#f5576c', '#ffecd2', '#fcb69f'];
+    
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.width = '10px';
+            confetti.style.height = '10px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.top = '-10px';
+            confetti.style.borderRadius = '50%';
+            confetti.style.pointerEvents = 'none';
+            confetti.style.zIndex = '1000';
+            
+            document.body.appendChild(confetti);
+            
+            // Animate falling
+            let pos = -10;
+            const fallInterval = setInterval(() => {
+                pos += 5;
+                confetti.style.top = pos + 'px';
+                confetti.style.transform = 'rotate(' + (pos * 2) + 'deg)';
+                
+                if (pos > window.innerHeight) {
+                    clearInterval(fallInterval);
+                    confetti.remove();
+                }
+            }, 20);
+        }, i * 30);
+    }
+}
